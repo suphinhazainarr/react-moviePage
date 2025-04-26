@@ -1,6 +1,6 @@
 import '../css/movieCard.css';
 interface Movie {
-  imdbID: number;
+  imdbID: string;
   Title: string;
   Year: string;
   Poster: string;

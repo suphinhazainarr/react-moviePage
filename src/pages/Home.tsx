@@ -55,15 +55,19 @@ function Home() {
 
 
 
-      <div className="movies-grid">
-        {movies
-        //   .filter((movie) =>
-        //     movie.title.toLowerCase().startsWith(searchTerm.toLowerCase())
-        //   )
-          .map((movie) => (
-            <MovieCard movie={movie} key={movie.imdbID} />
-          ))}
-      </div>
+ 
+      { loading ?  (
+        <div className="loading">Loading...</div>)
+        : (<div className="movies-grid">
+          {movies
+          //   .filter((movie) =>
+          //     movie.title.toLowerCase().startsWith(searchTerm.toLowerCase())
+          //   )
+            .map((movie) => (
+              <MovieCard movie={movie} key={movie.imdbID} />
+            ))}
+        </div>)
+      }
     </div>
   );
 }
