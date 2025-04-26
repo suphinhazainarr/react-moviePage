@@ -35,10 +35,23 @@ function Home() {
 
 
 
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+  const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     alert(searchTerm);
+    if(!searchTerm.trim()){
+      return;
   };
+  if(loading) return;
+  setLoading(true);
+  try{
+    const searchResults = await searchMovies(searchTerm);
+    setMovies(searchResults);
+    setError(null); // Clear any previous error
+  }catch (error) {
+    console.error("Error searching movies:", error);
+    setError("Failed to fetch movies. Please try again later.");
+  }finally {
+    setLoading(false);}
 
   return (
     <div className="home">
@@ -55,6 +68,7 @@ function Home() {
 
 
 
+{error && <div className="error-message">{error}</div>}
  
       { loading ?  (
         <div className="loading">Loading...</div>)
@@ -70,6 +84,7 @@ function Home() {
       }
     </div>
   );
+}
 }
 
 export default Home;
