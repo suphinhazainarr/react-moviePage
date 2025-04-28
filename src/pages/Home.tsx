@@ -1,9 +1,8 @@
 import MovieCard from "../components/MovieCard";
-import { FormEvent, useState ,useEffect} from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { searchMovies, getPopularMovies } from "../services/api";
-
-
 import "../css/home.css";
+
 interface Movie {
   imdbID: string;
   Title: string;
@@ -13,45 +12,43 @@ interface Movie {
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [movies,setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     const fetchMovies = async () => {
-      try{
+      try {
         const data = await getPopularMovies();
-        setMovies(data);  
-      }catch (error) {
-        console.error("Error fetching movies:", error); 
+        setMovies(data);
+      } catch (error) {
+        console.error("Error fetching movies:", error);
         setError("Failed to fetch movies. Please try again later.");
       } finally {
         setLoading(false);
-      }}
-      fetchMovies()
-    }, []);
-
- 
-
-
+      }
+    };
+    fetchMovies();
+  }, []);
 
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert(searchTerm);
-    if(!searchTerm.trim()){
+    if (!searchTerm.trim()) {
       return;
-  };
-  if(loading) return;
-  setLoading(true);
-  try{
-    const searchResults = await searchMovies(searchTerm);
-    setMovies(searchResults);
-    setError(null); // Clear any previous error
-  }catch (error) {
-    console.error("Error searching movies:", error);
-    setError("Failed to fetch movies. Please try again later.");
-  }finally {
-    setLoading(false);}
+    }
+    if (loading) return;
+    setLoading(true);
+    try {
+      const searchResults = await searchMovies(searchTerm);
+      setMovies(searchResults);
+      setError(null);
+    } catch (error) {
+      console.error("Error searching movies:", error);
+      setError("Failed to fetch movies. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }; // <-- This bracket was missing!
 
   return (
     <div className="home">
@@ -63,28 +60,24 @@ function Home() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-<button type="submit" className="search-button">Search</button>
-</form>
+        <button type="submit" className="search-button">
+          Search
+        </button>
+      </form>
 
+      {error && <div className="error-message">{error}</div>}
 
-
-{error && <div className="error-message">{error}</div>}
- 
-      { loading ?  (
-        <div className="loading">Loading...</div>)
-        : (<div className="movies-grid">
-          {movies
-          //   .filter((movie) =>
-          //     movie.title.toLowerCase().startsWith(searchTerm.toLowerCase())
-          //   )
-            .map((movie) => (
-              <MovieCard movie={movie} key={movie.imdbID} />
-            ))}
-        </div>)
-      }
+      {loading ? (
+        <div className="loading">Loading...</div>
+      ) : (
+        <div className="movies-grid">
+          {movies.map((movie) => (
+            <MovieCard movie={movie} key={movie.imdbID} />
+          ))}
+        </div>
+      )}
     </div>
   );
-}
 }
 
 export default Home;
